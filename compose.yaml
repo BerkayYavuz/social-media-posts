@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  user-service:
+    build:
+      context: ./UserService
+      dockerfile: Dockerfile-user
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/user_service_db
+      - SPRING_DATASOURCE_USERNAME=your_username
+      - SPRING_DATASOURCE_PASSWORD=your_password
+    depends_on:
+      - database
+
+  post-service:
+    build:
+      context: ./PostService
+      dockerfile: Dockerfile-post
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/post_service_db
+      - SPRING_DATASOURCE_USERNAME=your_username
+      - SPRING_DATASOURCE_PASSWORD=your_password
+    depends_on:
+      - database
+
+  database:
+    image: postgres:15
+    container_name: socialmedia-postgres
+    environment:
+      POSTGRES_USER: your_username
+      POSTGRES_PASSWORD: your_password
+      POSTGRES_DB: user_service_db
+    ports:
+      - "5432:5432"
